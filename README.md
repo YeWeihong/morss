@@ -35,7 +35,8 @@ You can use this program online for free at **[morss.it](https://morss.it/)**.
 Some features of morss:
 
 - Read RSS/Atom feeds
-- Create RSS feeds from json/html pages
+- Create RSS feeds from json/html pages with custom XPath rules
+- **🎯 Visual XPath Selector Tool** (Web UI for easy XPath generation)
 - Export feeds as RSS/JSON/CSV/HTML
 - Fetch full-text content of feed items
 - Follow 301/meta redirects
@@ -44,6 +45,7 @@ Some features of morss:
 - HTTP caching with different backends (in-memory/redis/diskcache)
 - Works as server/cli tool
 - Deobfuscate various tracking links
+- User-Agent rotation and anti-scraping strategies
 
 ## Documentation
 
@@ -71,6 +73,35 @@ These guides explain:
 - URL encoding rules (why `/` becomes `|` in URLs)
 - Complete examples with real-world scenarios
 - Debugging tips and troubleshooting
+
+#### 🎯 Visual XPath Selector Tool
+
+When running Morss as a web server, access the **XPath Selector Tool** at:
+- `http://localhost:8000/xpath-selector.html`
+
+This visual tool helps you:
+- Load any webpage in the tool
+- Click on page elements to select them
+- Automatically generate XPath rules
+- Get ready-to-use Morss URLs
+
+**Note**: Due to browser CORS restrictions, some websites cannot be loaded directly in the tool. For these sites, use browser developer tools (F12) to manually get XPath expressions. See the documentation for detailed instructions.
+
+### Web Scraping & Anti-Scraping Strategies
+
+Learn about Morss's HTTP library usage and anti-scraping techniques:
+- **[CRAWLER_ANTI_SCRAPING_CN.md](CRAWLER_ANTI_SCRAPING_CN.md)** - 爬虫机制与反爬策略详解（中文）
+
+This guide explains:
+- Why Morss uses `urllib` instead of `requests` library
+- How HTTP requests are handled
+- User-Agent rotation strategy
+- Cookie and redirect handling
+- Caching mechanisms (HTTP cache, Redis, disk cache)
+- Gzip compression and encoding detection
+- Rate limiting and timeout control
+- Proxy configuration
+- Best practices for polite web scraping
 
 ## Install
 
