@@ -107,6 +107,7 @@ This guide explains:
 
 For comprehensive deployment instructions in Chinese:
 - **[部署指南.md](部署指南.md)** - 完整部署文档（中文）
+- **[快速部署.md](快速部署.md)** - 快速部署命令参考（中文）
 
 This guide covers:
 - Docker deployment (recommended)
