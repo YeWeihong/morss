@@ -191,7 +191,7 @@ services:
 
 To use a different port (e.g., 18000), either:
 - Modify the ports mapping: `'18000:8000'`
-- Or use environment variable: `HOST_PORT=18000 docker-compose up -d`
+- Or use environment variable: `HOST_PORT=18000 docker compose up -d`
 
 Build from source
 
