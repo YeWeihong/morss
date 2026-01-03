@@ -1,2 +1,0 @@
-[console_scripts]
-morss = morss.__main__:main
