@@ -13,7 +13,10 @@ services:
     image: morss:custom
     container_name: morss-custom
     ports:
-      - "8000:8000"
+      # 主机端口:容器端口 (Host port:Container port)
+      # 可以修改主机端口为任意值，如 "18000:8000" 表示通过主机的 18000 端口访问
+      # You can change the host port to any value, e.g., "18000:8000" to access via host port 18000
+      - "${HOST_PORT:-8000}:8000"
     environment:
       # 调试模式 / Debug mode
       - DEBUG=0
