@@ -1,5 +1,7 @@
 # Morss Project Workflow Documentation
 
+> **Related Documentation**: To learn how to use custom XPath rules to create feeds from any webpage, see **[XPATH_CUSTOM_FEEDS.md](XPATH_CUSTOM_FEEDS.md)**
+
 ## Project Overview
 
 Morss is a tool for obtaining full-text RSS feeds. Its main function is to extract links from simplified RSS feeds on the web, visit those links to fetch complete article content, and put the full content back into the RSS feed.
