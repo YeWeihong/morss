@@ -45,6 +45,18 @@ Some features of morss:
 - Works as server/cli tool
 - Deobfuscate various tracking links
 
+## Documentation
+
+For a detailed explanation of the project workflow, architecture, and dependency analysis:
+- **[PROJECT_WORKFLOW.md](PROJECT_WORKFLOW.md)** - Complete technical documentation (English)
+- **[项目流程说明.md](项目流程说明.md)** - 完整技术文档（中文）
+
+These documents explain:
+- How data flows through the system (FeedFetch → FeedGather → FeedFormat)
+- External dependencies and their impact on local deployments
+- Autonomy of local Docker deployments
+- What happens if upstream services become unavailable
+
 ## Install
 
 ### Python package
