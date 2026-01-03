@@ -108,9 +108,11 @@ This guide explains:
 For comprehensive deployment instructions in Chinese:
 - **[部署指南.md](部署指南.md)** - 完整部署文档（中文）
 - **[快速部署.md](快速部署.md)** - 快速部署命令参考（中文）
+- **[PORT_CONFIGURATION.md](PORT_CONFIGURATION.md)** - Docker 端口配置详细说明（中文）
 
 This guide covers:
 - Docker deployment (recommended)
+- **How to customize Docker ports (e.g., change from 8000 to 18000)**
 - Python package installation
 - Running as web server or CLI tool
 - Cloud provider deployment (Heroku, Google Cloud Run, AWS, etc.)
