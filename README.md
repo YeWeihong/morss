@@ -183,8 +183,13 @@ services:
     app:
         image: pictuga/morss
         ports:
+            # Change host port (before colon) to customize: e.g., '18000:8000'
             - '8000:8000'
 ```
+
+To use a different port (e.g., 18000), either:
+- Modify the ports mapping: `'18000:8000'`
+- Or use environment variable: `HOST_PORT=18000 docker-compose up -d`
 
 Build from source
 
@@ -202,6 +207,7 @@ services:
         build: https://git.pictuga.com/pictuga/morss.git
         image: morss
         ports:
+            # Change host port (before colon) to customize: e.g., '18000:8000'
             - '8000:8000'
 ```
 
@@ -279,13 +285,21 @@ other clients.
 From docker hub
 
 ```shell
+# Default port 8000
 docker run -p 8000:8000 pictuga/morss
+
+# Or use custom port (e.g., 18000)
+docker run -p 18000:8000 pictuga/morss
 ```
 
 From source
 
 ```shell
+# Default port 8000
 docker run -p 8000:8000 morss
+
+# Or use custom port (e.g., 18000)
+docker run -p 18000:8000 morss
 ```
 
 With docker-compose **(recommended)**
