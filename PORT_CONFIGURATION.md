@@ -100,8 +100,8 @@ docker run -d -p 18000:8000 --name morss morss:custom
 ### 示例 1：快速启动（使用环境变量）
 
 ```bash
-# 克隆仓库
-git clone https://github.com/YeWeihong/morss.git
+# 克隆本仓库（将 URL 替换为实际的仓库地址）
+git clone <repository-url>
 cd morss
 
 # 使用 18000 端口启动
@@ -120,8 +120,8 @@ docker compose down
 ### 示例 2：使用 .env 文件
 
 ```bash
-# 克隆仓库
-git clone https://github.com/YeWeihong/morss.git
+# 克隆本仓库（将 URL 替换为实际的仓库地址）
+git clone <repository-url>
 cd morss
 
 # 创建配置文件
@@ -197,9 +197,13 @@ docker run -d \
 如果端口已被其他程序占用，选择一个不同的端口：
 
 ```bash
-# 检查端口占用情况
+# 检查端口占用情况（使用 ss 命令，推荐）
+ss -tlnp | grep 18000
+
+# 或使用 netstat（在较老的系统上）
 netstat -tlnp | grep 18000
-# 或
+
+# 或使用 lsof
 lsof -i :18000
 
 # 选择一个未被占用的端口
