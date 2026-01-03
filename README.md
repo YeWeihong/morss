@@ -45,6 +45,33 @@ Some features of morss:
 - Works as server/cli tool
 - Deobfuscate various tracking links
 
+## Documentation
+
+### Project Architecture & Workflow
+
+For a detailed explanation of the project workflow, architecture, and dependency analysis:
+- **[PROJECT_WORKFLOW.md](PROJECT_WORKFLOW.md)** - Complete technical documentation (English)
+- **[项目流程说明.md](项目流程说明.md)** - 完整技术文档（中文）
+
+These documents explain:
+- How data flows through the system (FeedFetch → FeedGather → FeedFormat)
+- External dependencies and their impact on local deployments
+- Autonomy of local Docker deployments
+- What happens if upstream services become unavailable
+
+### Custom XPath Feeds
+
+Learn how to create RSS feeds from any webpage using custom XPath rules:
+- **[XPATH_CUSTOM_FEEDS.md](XPATH_CUSTOM_FEEDS.md)** - Complete XPath guide (English)
+- **[XPATH_CUSTOM_FEEDS_CN.md](XPATH_CUSTOM_FEEDS_CN.md)** - XPath 完整指南（中文）
+
+These guides explain:
+- How to use `--items` and other custom feed parameters
+- XPath syntax and common patterns
+- URL encoding rules (why `/` becomes `|` in URLs)
+- Complete examples with real-world scenarios
+- Debugging tips and troubleshooting
+
 ## Install
 
 ### Python package
