@@ -103,6 +103,21 @@ This guide explains:
 - Proxy configuration
 - Best practices for polite web scraping
 
+### Deployment Guide
+
+For comprehensive deployment instructions in Chinese:
+- **[部署指南.md](部署指南.md)** - 完整部署文档（中文）
+- **[快速部署.md](快速部署.md)** - 快速部署命令参考（中文）
+
+This guide covers:
+- Docker deployment (recommended)
+- Python package installation
+- Running as web server or CLI tool
+- Cloud provider deployment (Heroku, Google Cloud Run, AWS, etc.)
+- Advanced configuration and environment variables
+- Systemd service setup
+- Common issues and troubleshooting
+
 ## Install
 
 ### Python package
