@@ -1,3 +1,19 @@
+Metadata-Version: 2.1
+Name: morss
+Version: 20260103.317
+Summary: Get full-text RSS feeds
+Home-page: http://morss.it/
+Author: pictuga
+Author-email: contact@pictuga.com
+License: AGPL v3
+Project-URL: Source, https://git.pictuga.com/pictuga/morss
+Project-URL: Bug Tracker, https://github.com/pictuga/morss/issues
+Requires-Python: >=2.7
+Description-Content-Type: text/markdown
+Provides-Extra: dev
+Provides-Extra: full
+License-File: LICENSE
+
 # Morss - Get full-text RSS feeds
 
 [Homepage](https://morss.it/) • 
