@@ -131,7 +131,7 @@ Looking at the Dockerfile:
 ```dockerfile
 FROM alpine:edge                    # Base image (one-time download)
 
-ADD . /app                          # Copy local code
+ADD . /app                          # Copy source code to container
 
 RUN set -ex; \
     apk add --no-cache --virtual .run-deps python3 py3-lxml py3-setproctitle py3-setuptools; \
@@ -183,7 +183,7 @@ CMD ["run"]
 
 1. **Use disk cache**
    ```bash
-   docker run -p 8000:8000 -e CACHE=diskcache -v /path/to/cache:/cache morss
+   docker run -p 8000:8000 -e CACHE=diskcache -v /home/user/morss-cache:/cache morss
    ```
 
 2. **Adjust cache strategy**
