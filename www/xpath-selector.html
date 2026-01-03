@@ -274,6 +274,7 @@
         
         <div class="instructions">
             <h3>📖 使用说明</h3>
+            <p><strong>方式一：直接加载网页（推荐）</strong></p>
             <ol>
                 <li>在下方输入框中输入你想要抓取的网页 URL</li>
                 <li>点击"加载网页"按钮</li>
@@ -286,13 +287,20 @@
                     </ul>
                 </li>
                 <li>自动生成的 XPath 规则和 Morss URL 会显示在下方</li>
-                <li>复制 URL 到浏览器地址栏或 RSS 阅读器中使用</li>
+            </ol>
+            <p><strong>方式二：手动输入 XPath（适用于 CORS 限制的网站）</strong></p>
+            <ol>
+                <li>点击"手动输入 XPath"按钮</li>
+                <li>在浏览器中打开目标网页，按 F12 打开开发者工具</li>
+                <li>使用元素选择器选中页面元素，右键 → 复制 → 复制 XPath</li>
+                <li>将 XPath 粘贴到对应的输入框中</li>
+                <li>系统会自动优化 XPath 并生成 Morss URL</li>
             </ol>
         </div>
         
         <div class="alert alert-warning">
             <strong>⚠️ 注意：</strong>由于浏览器安全限制（CORS），部分网站可能无法在此工具中直接加载。
-            对于这些网站，你可以使用浏览器开发者工具（F12）手动获取 XPath。
+            对于这些网站，你可以使用浏览器开发者工具（F12）手动获取 XPath，然后使用下方的"手动输入 XPath"功能。
             详见<a href="/XPATH_CUSTOM_FEEDS_CN.md" target="_blank">《XPath 自定义规则详解》</a>
         </div>
         
@@ -300,7 +308,65 @@
             <label for="targetUrl">目标网页 URL：</label>
             <input type="text" id="targetUrl" placeholder="https://example.com/blog" />
             <button onclick="loadPage()">加载网页</button>
-            <button class="button-secondary" onclick="useProxyMode()">使用代理模式</button>
+            <button class="button-secondary" onclick="showManualInput()">✋ 手动输入 XPath</button>
+        </div>
+        
+        <div id="manualInputSection" class="hidden" style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-top: 20px; border: 2px solid #4CAF50;">
+            <h2 style="margin-top: 0; color: #4CAF50;">📝 手动输入 XPath 模式</h2>
+            <div class="alert alert-info" style="margin-bottom: 20px;">
+                <strong>💡 使用方法：</strong>
+                <ol style="margin: 10px 0 0 0; padding-left: 20px;">
+                    <li>在浏览器中打开目标网页，按 F12 打开开发者工具</li>
+                    <li>点击"元素选择器"（或按 Ctrl+Shift+C）</li>
+                    <li>点击页面上要抓取的元素</li>
+                    <li>在开发者工具中，右键点击高亮的 HTML 元素 → 复制 → 复制 XPath</li>
+                    <li>将复制的 XPath 粘贴到下面对应的输入框中</li>
+                    <li>系统会自动优化 XPath 并生成 Morss URL</li>
+                </ol>
+            </div>
+            
+            <div class="input-section">
+                <label for="manualItems">
+                    <strong style="color: #d32f2f;">*</strong> 订阅项容器 (items) - 必填：
+                    <span style="font-size: 12px; color: #666; font-weight: normal;">选择所有文章/条目的共同父元素</span>
+                </label>
+                <textarea id="manualItems" rows="2" placeholder="例如：/html/body/div[1]/div[2]/div[@class='post']"></textarea>
+            </div>
+            
+            <div class="input-section">
+                <label for="manualTitle">
+                    标题 (item_title) - 可选：
+                    <span style="font-size: 12px; color: #666; font-weight: normal;">文章标题的位置（相对于 items）</span>
+                </label>
+                <textarea id="manualTitle" rows="2" placeholder="例如：.//h2/a 或 ./div[@class='title']"></textarea>
+            </div>
+            
+            <div class="input-section">
+                <label for="manualLink">
+                    链接 (item_link) - 可选：
+                    <span style="font-size: 12px; color: #666; font-weight: normal;">文章链接的位置（相对于 items）</span>
+                </label>
+                <textarea id="manualLink" rows="2" placeholder="例如：.//a/@href 或 .//@data-url"></textarea>
+            </div>
+            
+            <div class="input-section">
+                <label for="manualContent">
+                    内容 (item_content) - 可选：
+                    <span style="font-size: 12px; color: #666; font-weight: normal;">文章摘要或内容（相对于 items）</span>
+                </label>
+                <textarea id="manualContent" rows="2" placeholder="例如：.//div[@class='summary'] 或 ./p"></textarea>
+            </div>
+            
+            <div class="input-section">
+                <label for="manualTime">
+                    时间 (item_time) - 可选：
+                    <span style="font-size: 12px; color: #666; font-weight: normal;">发布时间（相对于 items）</span>
+                </label>
+                <textarea id="manualTime" rows="2" placeholder="例如：.//span[@class='date'] 或 .//@datetime"></textarea>
+            </div>
+            
+            <button onclick="generateFromManual()">🚀 生成 Morss URL</button>
+            <button class="button-danger" onclick="closeManualInput()">取消</button>
         </div>
         
         <div id="selectionMode" class="selection-mode hidden">
@@ -606,8 +672,30 @@
             const rulesContainer = document.getElementById('xpathRules');
             rulesContainer.innerHTML = '';
             
+            // Show optimization info if items was optimized
+            if (xpathRules._original_items) {
+                const optimizationDiv = document.createElement('div');
+                optimizationDiv.className = 'xpath-rule';
+                optimizationDiv.style.borderLeftColor = '#2196F3';
+                optimizationDiv.innerHTML = `
+                    <h3>✨ XPath 自动优化</h3>
+                    <div style="margin-bottom: 10px;">
+                        <strong>原始 XPath：</strong>
+                        <div class="xpath-value" style="background: #fff3cd; border-color: #ffc107;">${escapeHtml(xpathRules._original_items)}</div>
+                    </div>
+                    <div>
+                        <strong>优化后 XPath：</strong>
+                        <div class="xpath-value" style="background: #e8f5e9; border-color: #4CAF50;">${escapeHtml(xpathRules.items)}</div>
+                    </div>
+                    <p style="color: #666; font-size: 13px; margin-top: 10px; margin-bottom: 0;">
+                        💡 系统自动简化了 XPath，使其更通用和易于维护。优化后的 XPath 将用于生成 Morss URL。
+                    </p>
+                `;
+                rulesContainer.appendChild(optimizationDiv);
+            }
+            
             for (const [key, value] of Object.entries(xpathRules)) {
-                if (value) {
+                if (value && !key.startsWith('_')) {
                     const ruleDiv = document.createElement('div');
                     ruleDiv.className = 'xpath-rule';
                     ruleDiv.innerHTML = `
@@ -643,7 +731,7 @@
             // Build options string
             let options = [];
             for (const [key, value] of Object.entries(xpathRules)) {
-                if (value) {
+                if (value && !key.startsWith('_')) {
                     // Replace / with | and URL encode
                     const encoded = value.replace(/\//g, '|');
                     options.push(`${key}=${encodeURIComponent(encoded)}`);
@@ -720,22 +808,101 @@
         function showManualInput() {
             const manualSection = document.getElementById('manualInputSection');
             manualSection.classList.toggle('hidden');
+            
+            // Close iframe if open
+            if (!manualSection.classList.contains('hidden')) {
+                document.getElementById('iframeContainer').classList.add('hidden');
+                document.getElementById('selectionMode').classList.add('hidden');
+            }
+        }
+        
+        function closeManualInput() {
+            const manualSection = document.getElementById('manualInputSection');
+            manualSection.classList.add('hidden');
+            
+            // Clear inputs
+            document.getElementById('manualItems').value = '';
+            document.getElementById('manualTitle').value = '';
+            document.getElementById('manualLink').value = '';
+            document.getElementById('manualContent').value = '';
+            document.getElementById('manualTime').value = '';
+        }
+        
+        // XPath optimization function
+        function optimizeXPath(xpath) {
+            if (!xpath) return xpath;
+            
+            xpath = xpath.trim();
+            
+            // Remove leading/trailing quotes if present
+            if ((xpath.startsWith('"') && xpath.endsWith('"')) || 
+                (xpath.startsWith("'") && xpath.endsWith("'"))) {
+                xpath = xpath.slice(1, -1);
+            }
+            
+            // 1. Simplify complex absolute paths generated by browser
+            // Example: /html/body/div[1]/div[2]/article[@class="post"]
+            // Convert to: //article[@class="post"]
+            
+            // If xpath contains specific class/id at the end, try to simplify
+            const classMatch = xpath.match(/\[@class=['"]([^'"]+)['"]\]$/);
+            const idMatch = xpath.match(/\[@id=['"]([^'"]+)['"]\]$/);
+            
+            if (classMatch || idMatch) {
+                // Extract the last element with class or id
+                const parts = xpath.split('/');
+                const lastPart = parts[parts.length - 1];
+                const tagMatch = lastPart.match(/^(\w+)\[/);
+                
+                if (tagMatch) {
+                    const tag = tagMatch[1];
+                    if (classMatch) {
+                        // Simplify to //tag[@class="..."]
+                        xpath = `//${tag}[@class="${classMatch[1]}"]`;
+                    } else if (idMatch) {
+                        // Simplify to //*[@id="..."]
+                        xpath = `//*[@id="${idMatch[1]}"]`;
+                    }
+                }
+            }
+            // If no class/id but has multiple levels, try to simplify by using //
+            else if (xpath.startsWith('/html/body/') && !xpath.includes('[@')) {
+                // Convert /html/body/div/div/article to //article
+                const parts = xpath.split('/').filter(p => p);
+                if (parts.length > 3) {
+                    const lastTag = parts[parts.length - 1];
+                    // Only simplify if the last tag looks specific (not just div)
+                    if (lastTag !== 'div' && lastTag !== 'span') {
+                        xpath = '//' + lastTag;
+                    }
+                }
+            }
+            
+            // 2. Convert class exact match to Morss simplified syntax (only for items)
+            // //div[@class="post"] can be written as //div[class=post] in Morss
+            // But we'll keep the standard format for compatibility
+            
+            // 3. For relative paths (starting with .), ensure they are properly formatted
+            if (xpath.startsWith('.//') || xpath.startsWith('./')) {
+                // Already relative, keep as is
+            } else if (xpath.startsWith('//') || xpath.startsWith('/')) {
+                // Absolute path, keep as is
+            } else if (!xpath.startsWith('/') && !xpath.startsWith('.')) {
+                // No prefix, assume relative
+                xpath = './' + xpath;
+            }
+            
+            return xpath;
         }
         
         function generateFromManual() {
             // Get manual inputs
-            const items = document.getElementById('manualItems').value.trim();
+            let items = document.getElementById('manualItems').value.trim();
             
             if (!items) {
                 alert('请至少输入 items 规则（必需）');
                 return;
             }
-            
-            xpathRules.items = items;
-            xpathRules.item_title = document.getElementById('manualTitle').value.trim() || null;
-            xpathRules.item_link = document.getElementById('manualLink').value.trim() || null;
-            xpathRules.item_content = document.getElementById('manualContent').value.trim() || null;
-            xpathRules.item_time = document.getElementById('manualTime').value.trim() || null;
             
             targetUrl = document.getElementById('targetUrl').value.trim();
             if (!targetUrl) {
@@ -743,6 +910,34 @@
                 return;
             }
             
+            // Validate URL
+            try {
+                new URL(targetUrl);
+            } catch (e) {
+                alert('URL 格式不正确，请输入完整的 URL（包括 http:// 或 https://）');
+                return;
+            }
+            
+            // Optimize XPath expressions
+            const originalItems = items;
+            items = optimizeXPath(items);
+            
+            const title = document.getElementById('manualTitle').value.trim();
+            const link = document.getElementById('manualLink').value.trim();
+            const content = document.getElementById('manualContent').value.trim();
+            const time = document.getElementById('manualTime').value.trim();
+            
+            xpathRules.items = items;
+            xpathRules.item_title = optimizeXPath(title) || null;
+            xpathRules.item_link = optimizeXPath(link) || null;
+            xpathRules.item_content = optimizeXPath(content) || null;
+            xpathRules.item_time = optimizeXPath(time) || null;
+            
+            // Store original for comparison
+            xpathRules._original_items = originalItems !== items ? originalItems : null;
+            
+            // Close manual input and show results
+            closeManualInput();
             displayResults();
         }
     </script>
