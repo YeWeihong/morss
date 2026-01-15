@@ -129,37 +129,42 @@ morss/
 1. 进入项目设置：`Settings` → `Environment Variables`
 2. 添加以下变量（可选）：
 
-#### 缓存配置
+#### 缓存配置（可选但推荐）
+
+**默认情况**：Morss 使用内存缓存，每次请求独立，无持久化。
+
+**推荐配置**：使用外部 Redis 实现跨请求缓存
 
 ```bash
-# 缓存类型（推荐使用外部 Redis）
+# Redis 配置（推荐）
 CACHE=redis
-
-# Redis 配置（使用外部 Redis 服务）
 REDIS_HOST=your-redis.upstash.io
 REDIS_PORT=6379
 REDIS_PWD=your-password
 REDIS_DB=0
-
-# 如果使用磁盘缓存（不推荐，每次请求会重置）
-CACHE=diskcache
-CACHE_SIZE=104857600    # 100MB
 ```
 
-#### 性能配置
+**注意**：
+- 磁盘缓存（`diskcache`）在 Vercel serverless 环境中**不起作用**（每次请求会重置）
+- 如果不配置外部 Redis，将使用内存缓存（每次请求独立）
+- 外部 Redis 可以显著提升性能，避免重复抓取
+
+#### 性能配置（已在 vercel.json 中设置默认值）
 
 ```bash
 # 限制抓取数量（重要！Vercel 有执行时间限制）
-MAX_ITEM=30             # 最多抓取 30 篇文章
-MAX_TIME=20             # 最多花费 20 秒抓取
+MAX_ITEM=30             # 最多抓取 30 篇文章（默认）
+MAX_TIME=20             # 最多花费 20 秒抓取（默认）
 
 # HTTP 超时
-TIMEOUT=8               # 每个请求最多等待 8 秒
+TIMEOUT=8               # 每个请求最多等待 8 秒（默认）
 
 # 总时间限制
-LIM_TIME=25             # 整个处理过程不超过 25 秒
-LIM_ITEM=50             # 最多处理 50 个条目
+LIM_TIME=25             # 整个处理过程不超过 25 秒（默认）
+LIM_ITEM=50             # 最多处理 50 个条目（默认）
 ```
+
+**说明**：这些值已经在 `vercel.json` 中配置为默认值，适合 Hobby 计划的 10 秒限制。如果需要调整，可以在 Vercel Dashboard 中覆盖。
 
 #### 调试配置
 
@@ -364,14 +369,20 @@ TIMEOUT=5
 
 ### 3. 缓存不工作
 
-**原因**：Serverless 函数无状态，磁盘缓存会丢失
+**原因**：Serverless 函数无状态，默认使用内存缓存（每次请求独立）
 
 **解决方案**：
 ```bash
-# 使用外部 Redis
+# 使用外部 Redis（需要先在 requirements.txt 中添加 redis 依赖）
 CACHE=redis
 REDIS_HOST=your-redis.upstash.io
+REDIS_PORT=6379
+REDIS_PWD=your-password
 ```
+
+**注意**：如果需要使用 Redis，需要：
+1. 在项目中创建/修改 `requirements.txt`，添加 `redis` 依赖
+2. 或者在 Vercel 项目设置中配置 `pip install redis` 作为构建命令
 
 ### 4. 内存不足："Function exceeded memory limit"
 
@@ -399,6 +410,31 @@ REDIS_HOST=your-redis.upstash.io
 3. 输入你的域名（如 `morss.example.com`）
 4. 按提示在 DNS 提供商处添加 CNAME 记录
 5. 等待 DNS 生效（几分钟到几小时）
+
+### 7. 如何添加可选依赖（Redis/diskcache）？
+
+默认的 `requirements.txt` 只包含核心依赖。如果需要使用 Redis 或 diskcache：
+
+**方法一**：Fork 后修改 requirements.txt
+
+```bash
+# 1. Fork 项目到你的 GitHub
+# 2. 编辑 requirements.txt，添加：
+redis
+diskcache
+
+# 3. 提交并推送
+# 4. 从你的 fork 部署到 Vercel
+```
+
+**方法二**：配置构建命令（不推荐，因为每次部署都要安装）
+
+在 Vercel 项目设置中：
+1. 进入 `Settings` → `General`
+2. 找到 `Build Command`
+3. 设置为：`pip install redis diskcache`
+
+**推荐**：只在需要时添加依赖。如果使用外部 Redis，添加 `redis`；如果不需要缓存，使用默认的内存缓存即可。
 
 ## 更新部署
 

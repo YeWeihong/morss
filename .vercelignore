@@ -22,6 +22,7 @@ docker-compose*.yml
 # Documentation (keep essential docs)
 *.md
 !README.md
+!VERCEL_DEPLOYMENT_CN.md
 
 # CI/CD for other platforms
 heroku.yml
