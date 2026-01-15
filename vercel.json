@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "name": "morss",
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py"
+    }
+  ],
+  "env": {
+    "CACHE": "diskcache",
+    "CACHE_SIZE": "104857600",
+    "MAX_ITEM": "50",
+    "MAX_TIME": "30",
+    "TIMEOUT": "10"
+  }
+}
