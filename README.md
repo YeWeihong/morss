@@ -215,6 +215,7 @@ docker-compose build --no-cache --pull
 
 One-click deployment:
 
+[![Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YeWeihong/morss)
 [![Heroku](https://img.shields.io/static/v1?label=deploy%20to&message=heroku&logo=heroku&color=79589F)](https://heroku.com/deploy?template=https://github.com/pictuga/morss)
 [![Google Cloud](https://img.shields.io/static/v1?label=deploy%20to&message=google&logo=google&color=4285F4)](https://deploy.cloud.run/?git_repo=https://github.com/pictuga/morss.git)
 
