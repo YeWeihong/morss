@@ -27,6 +27,13 @@ This module adapts the WSGI application for Vercel's serverless environment
 # Vercel's runtime inspects module-level objects, and calling issubclass() on
 # non-class objects like sys and os modules causes a TypeError
 def _setup_path():
+    """
+    Setup Python path to import morss module.
+    
+    This function encapsulates sys and os imports to prevent them from being
+    exposed at module level, which would cause Vercel's handler inspection
+    code to fail with 'TypeError: issubclass() arg 1 must be a class'.
+    """
     import sys
     import os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
