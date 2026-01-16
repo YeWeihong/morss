@@ -29,9 +29,9 @@ import os
 # Add parent directory to path to import morss module
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from morss.wsgi import application
-
-# Vercel uses the "app" or "handler" convention
-# The application is already a WSGI callable
-app = application
-handler = application
+# Import the WSGI application as 'handler' for Vercel
+# Note: Only export 'handler' to avoid Vercel's issubclass() TypeError
+# The original code exported 'app', 'application', and 'handler', which
+# caused Vercel's runtime inspection code to fail with:
+# "TypeError: issubclass() arg 1 must be a class"
+from morss.wsgi import application as handler
