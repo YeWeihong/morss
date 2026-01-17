@@ -108,9 +108,11 @@ This guide explains:
 For comprehensive deployment instructions in Chinese:
 - **[部署指南.md](部署指南.md)** - 完整部署文档（中文）
 - **[快速部署.md](快速部署.md)** - 快速部署命令参考（中文）
+- **[PORT_CONFIGURATION.md](PORT_CONFIGURATION.md)** - Docker 端口配置详细说明（中文）
 
 This guide covers:
 - Docker deployment (recommended)
+- **How to customize Docker ports (e.g., change from 8000 to 18000)**
 - Python package installation
 - Running as web server or CLI tool
 - Cloud provider deployment (Heroku, Google Cloud Run, AWS, etc.)
@@ -183,8 +185,13 @@ services:
     app:
         image: pictuga/morss
         ports:
+            # Change host port (before colon) to customize: e.g., '18000:8000'
             - '8000:8000'
 ```
+
+To use a different port (e.g., 18000), either:
+- Modify the ports mapping: `'18000:8000'`
+- Or use environment variable: `HOST_PORT=18000 docker compose up -d`
 
 Build from source
 
@@ -202,6 +209,7 @@ services:
         build: https://git.pictuga.com/pictuga/morss.git
         image: morss
         ports:
+            # Change host port (before colon) to customize: e.g., '18000:8000'
             - '8000:8000'
 ```
 
@@ -280,13 +288,21 @@ other clients.
 From docker hub
 
 ```shell
+# Default port 8000
 docker run -p 8000:8000 pictuga/morss
+
+# Or use custom port (e.g., 18000)
+docker run -p 18000:8000 pictuga/morss
 ```
 
 From source
 
 ```shell
+# Default port 8000
 docker run -p 8000:8000 morss
+
+# Or use custom port (e.g., 18000)
+docker run -p 18000:8000 morss
 ```
 
 With docker-compose **(recommended)**
