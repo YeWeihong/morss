@@ -9,7 +9,8 @@ RUN set -ex; \
 	pip3 install --no-cache-dir --break-system-packages /app[full]; \
 	apk del .build-deps
 
-USER 1000:1000
+# 使用root用户权限，可以避免缓存文件权限不足的问题
+# USER 1000:1000
 
 ENTRYPOINT ["/bin/sh", "/app/morss-helper"]
 CMD ["run"]
