@@ -2,42 +2,51 @@ version: '3.8'
 
 services:
   morss:
-    image: pictuga/morss
-    container_name: morss
+    build: .
+    # 使用本地构建的自定义镜像
+    image: morss:custom
+    container_name: morss_custom_test
+    restart: unless-stopped
+
+    # 使用默认 Bridge 网络模式并映射端口
+    # 格式：宿主机端口:容器内部端口
     ports:
-      - "8000:8000"
+      - "18000:18000"
+
     environment:
-      # 调试模式（生产环境建议关闭）
-      # Debug mode (recommended to disable in production)
+      # 如果你的网络环境需要代理，填入代理地址；否则可删除这两行
+      - HTTP_PROXY=http://192.168.5.2:7890
+      - HTTPS_PROXY=http://192.168.5.2:7890
+
+      # 让容器内部监听 18000 端口（需与 ports 映射保持一致）
+      - PORT=18000
+
+      # 调试配置（生产环境建议关闭）
       - DEBUG=0
-      
-      # 缓存配置 / Cache configuration
+
+      # 缓存配置
       - CACHE=diskcache
       - CACHE_SIZE=1073741824  # 1GB
       - DISKCACHE_DIR=/cache
-      
-      # 性能配置 / Performance configuration
+
+      # 性能配置
       - MAX_ITEM=100
       - MAX_TIME=60
       - TIMEOUT=15
-      
-      # Gunicorn 配置 / Gunicorn configuration
-      - GUNICORN_CMD_ARGS=--workers=4 --timeout=120
+
+      # Gunicorn 性能调优
+      # N1 为双核/四核设备，workers=2 是合理的初始值
+      - GUNICORN_CMD_ARGS=--workers=2 --timeout=120
+
     volumes:
-      # 持久化缓存 / Persistent cache
-      - ./morss-cache:/cache
-    restart: unless-stopped
+      # 持久化缓存目录（宿主机路径:容器内路径）
+      - /mnt/usb1-1/morss_custom/morss_cache:/cache
+
+      # （可选）挂载自定义 www 目录，覆盖内置静态资源
+      # - /mnt/usb1-1/morss_custom/morss/www:/app/custom_www
+
     healthcheck:
       test: ["CMD", "/bin/sh", "/app/morss-helper", "check"]
-      interval: 30s
+      interval: 5m   # 每 5 分钟检查一次，避免日志刷屏
       timeout: 10s
       retries: 3
-
-  # 可选：Redis 缓存服务（如需使用请取消注释）
-  # Optional: Redis cache service (uncomment if needed)
-  # redis:
-  #   image: redis:alpine
-  #   container_name: morss-redis
-  #   volumes:
-  #     - ./redis-data:/data
-  #   restart: unless-stopped
