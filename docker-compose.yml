@@ -40,7 +40,7 @@ services:
 
     volumes:
       # 持久化缓存目录（宿主机路径:容器内路径）
-      - /mnt/usb1-1/morss_custom/morss_cache:/cache
+      - /mnt/usb1-1/morss/morss_custom_test/morss_cache:/cache
 
       # （可选）挂载自定义 www 目录，覆盖内置静态资源
       # - /mnt/usb1-1/morss_custom/morss/www:/app/custom_www
