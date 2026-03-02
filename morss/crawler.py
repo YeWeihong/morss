@@ -237,13 +237,21 @@ class RespStrHandler(RespDataHandler):
     def data_response(self, req, resp, data):
         #decode
         enc = detect_encoding(data, resp)
-        data_str = data.decode(enc, 'replace')
+        try:
+            data_str = data.decode(enc, 'replace')
+        except (UnicodeError, LookupError):
+            # Unknown or invalid encoding (e.g. 'x-gbk' variants not caught by
+            # detect_encoding); fall back to UTF-8 to avoid crashing
+            enc = 'utf-8'
+            data_str = data.decode(enc, 'replace')
 
         #process
         data_str = self.str_response(req, resp, data_str)
 
         # return
-        data = data_str.encode(enc) if data_str is not None else data
+        # Use 'replace' to avoid UnicodeEncodeError when data_str contains
+        # replacement characters (U+FFFD) that cannot be re-encoded in enc
+        data = data_str.encode(enc, 'replace') if data_str is not None else data
 
         #return
         return data
@@ -306,7 +314,7 @@ class GZIPHandler(RespDataHandler):
 def detect_encoding(data, resp=None):
     enc = detect_raw_encoding(data, resp)
 
-    if enc.lower() == 'gb2312':
+    if enc.lower() in ('gb2312', 'x-gbk'):
         enc = 'gbk'
 
     return enc
