@@ -32,7 +32,7 @@ def test_gzip_handler(replay_server, opener):
 @pytest.mark.parametrize('opener', [custom_opener(), build_opener(EncodingFixHandler())])
 @pytest.mark.parametrize('url', [
     'enc-gb2312-header.txt', 'enc-gb2312-meta.txt', #'enc-gb2312-missing.txt',
-    'enc-gbk-header.txt', 'enc-x-gbk-header.txt',
+    'enc-gbk-header.txt', 'enc-x-gbk-header.txt', 'enc-gb18030-header.txt',
     'enc-iso-8859-1-header.txt', 'enc-iso-8859-1-missing.txt',
     'enc-utf-8-header.txt',
     ])

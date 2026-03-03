@@ -314,7 +314,7 @@ class GZIPHandler(RespDataHandler):
 def detect_encoding(data, resp=None):
     enc = detect_raw_encoding(data, resp)
 
-    if enc.lower() in ('gb2312', 'x-gbk'):
+    if enc.lower() in ('gb2312', 'gbk', 'gb18030', 'x-gbk'):
         enc = 'gbk'
 
     return enc
@@ -338,7 +338,13 @@ def detect_raw_encoding(data, resp=None):
     if match:
         return match.groups()[0].lower().decode()
 
-    enc = chardet.detect(data[-2000:])['encoding']
+    if len(data) > 6000:
+        mid_start = max(0, len(data)//2 - 1000)
+        mid_end = len(data)//2 + 1000
+        sample = data[:2000] + data[mid_start:mid_end] + data[-2000:]
+    else:
+        sample = data
+    enc = chardet.detect(sample)['encoding']
     if enc and enc != 'ascii':
         return enc
 
